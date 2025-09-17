@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-validity-ms: 50000000
+  refresh-token-validity-ms: 604800000
+
+payment:
+  client-key: secretsecretsecret
+  secret-key: secretsecretsecret
+  confirmUrl: secretsecretsecret
+
+firebase:
+  base-url: ${BASE_URL}
+
+slack:
+  token: slackslackslack
+
+login:
+  success-url: localhost:3000

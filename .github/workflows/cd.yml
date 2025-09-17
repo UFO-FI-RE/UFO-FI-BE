@@ -1,0 +1,102 @@
+name: ufo_fi CD
+
+on:
+  push:
+    branches: [ "develop" ]
+    paths-ignore:
+      - 'README.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 실행환경 지정
+
+    # 실행 스텝 지정
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: JDK 17 시작
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: application-prod.properties 설정
+        run: |
+          touch src/main/resources/application-prod.properties
+          echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" > src/main/resources/application-prod.properties
+
+      - name: Gradle 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: Gradle 빌드 실행
+        run: ./gradlew clean build --stacktrace
+
+      - name: Docker 이미지 빌드
+        run: docker build -t $DOCKER_USER/ufo_fi_be:latest .
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: DockerHub에 이미지 push
+        run: docker push $DOCKER_USER/ufo_fi_be:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'success' }}
+
+    steps:
+      - name: EC2 배포(실패 시 롤백)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            
+            echo "${{ secrets.FIREBASE_JSON_B64 }}" | base64 --decode > /home/ubuntu/serviceAccountKey.json
+            
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/ufo_fi_be
+            
+            docker stop ufo_fi_be || true
+            docker rename ufo_fi_be ufo_fi_be_backup || true
+            
+            docker run -d \
+            --name ufo_fi_be_new \
+            -p 8080:8080 \
+            -v /home/ubuntu/serviceAccountKey.json:/app/resources/serviceAccountKey.json \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/ufo_fi_be
+            
+            sleep 60
+            
+            if curl -f http://localhost:8080/actuator/health; then
+              echo "health check passed. finalizing..."
+              docker rm ufo_fi_be_backup || true
+              docker stop ufo_fi_be_new
+              docker rename ufo_fi_be_new ufo_fi_be
+              docker start ufo_fi_be
+              rm -f /home/ubuntu/serviceAccountKey.json
+              echo "deploy success"
+            else
+              echo "health check failed"
+              docker stop ufo_fi_be_new || true
+              docker rm ufo_fi_be_new || true
+              docker rename ufo_fi_be_backup ufo_fi_be || true
+              docker start ufo_fi_be || true
+              exit 1
+            fi
