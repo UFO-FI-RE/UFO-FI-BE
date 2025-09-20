@@ -10,7 +10,7 @@ spring:
       ddl-auto: create-drop
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret:
   access-token-validity-ms: 50000000
   refresh-token-validity-ms: 604800000
 
@@ -20,10 +20,17 @@ payment:
   confirmUrl: secretsecretsecret
 
 firebase:
-  base-url: ${BASE_URL}
+  base-url: http://localhost:8080
 
 slack:
   token: slackslackslack
 
 login:
   success-url: localhost:3000
+
+oauth:
+  kakao:
+    client-id: test-client
+    client-secret: test-secret
+    redirect-uri: http://localhost/callback
+    user-info-request-url: https://kapi.kakao.com/v2/user/me
