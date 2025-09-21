@@ -25,8 +25,4 @@ final public class KakaoOAuthUserInfoRequest {
     public String getAccessToken(String rawAccessToken) {
         return "Bearer " + rawAccessToken;
     }
-
-    public String getUri() {
-        return null;
-    }
 }
