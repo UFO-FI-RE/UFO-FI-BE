@@ -28,9 +28,9 @@ oauth:
       - account_email
 
 jwt:
-  secret:
-  access-token-validity-ms:
-  refresh-token-validity-ms:
+  secret: 5Z+j99jYMA+kKsdq0zjEVSQsAeLEUTyzsdGZ5pas5eQ=
+  access-token-validity-ms: 10000
+  refresh-token-validity-ms: 10000
 
 payment:
   client-key: secretsecretsecret
