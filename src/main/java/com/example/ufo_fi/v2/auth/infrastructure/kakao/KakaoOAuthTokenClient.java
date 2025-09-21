@@ -19,7 +19,7 @@ public class KakaoOAuthTokenClient implements OAuthTokenClient {
     public KakaoToken generate(String code) {
         try{
             return restClient.post()
-                    .uri(kakaoOAuthTokenRequest.getRedirectUrl())
+                    .uri(kakaoOAuthTokenRequest.getTokenBaseUrl())
                     .contentType(kakaoOAuthTokenRequest.getContentType())
                     .body(kakaoOAuthTokenRequest.createRequestBody(code))
                     .retrieve()

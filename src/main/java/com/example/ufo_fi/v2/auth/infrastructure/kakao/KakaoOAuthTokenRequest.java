@@ -1,13 +1,12 @@
 package com.example.ufo_fi.v2.auth.infrastructure.kakao;
 
 import com.example.ufo_fi.v2.auth.config.KakaoOAuthProperties;
-import com.google.common.collect.ImmutableBiMap;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @Getter
 @Component
@@ -18,18 +17,18 @@ final public class KakaoOAuthTokenRequest {
 
     private final KakaoOAuthProperties kakaoOAuthProps;
 
-    public Map<String, String> createRequestBody(String code) {
-        return ImmutableBiMap.of(
-                "code", code,
-                "client_id", kakaoOAuthProps.getClientId(),
-                "grant_type", GRANT_TYPE,
-                "client_secret", kakaoOAuthProps.getClientSecret(),
-                "redirect_uri", kakaoOAuthProps.getRedirectUri()
-        );
+    public MultiValueMap<String, String> createRequestBody(String code) {
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("grant_type", "authorization_code");
+        requestBody.add("client_id", kakaoOAuthProps.getClientId());
+        requestBody.add("client_secret", kakaoOAuthProps.getClientSecret());
+        requestBody.add("redirect_uri", kakaoOAuthProps.getRedirectUri());
+        requestBody.add("code", code);
+        return requestBody;
     }
 
-    public String getRedirectUrl() {
-        return kakaoOAuthProps.getRedirectUri();
+    public String getTokenBaseUrl() {
+        return kakaoOAuthProps.getTokenBaseUrl();
     }
 
     public MediaType getContentType() {

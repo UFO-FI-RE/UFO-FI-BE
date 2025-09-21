@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 class KakaoOAuthUserInfoRequestTest {
 
@@ -34,7 +34,8 @@ class KakaoOAuthUserInfoRequestTest {
                 "https://test-redirectUri",
                 "https://test-tokenBaseUrl",
                 "test-clientSecret",
-                "https://test-userInfoRequestUrl"
+                "https://test-userInfoRequestUrl",
+                List.of("test-scope")
         );
         KakaoOAuthUserInfoRequest kakaoOAuthUserInfoRequest = new KakaoOAuthUserInfoRequest(kakaoOAuthProperties);
 

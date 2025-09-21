@@ -3,6 +3,7 @@ package com.example.ufo_fi.v2.auth.config;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
 import java.util.Locale;
 
 @Getter
@@ -13,15 +14,17 @@ final public class KakaoOAuthProperties {
     private final String tokenBaseUrl;
     private final String clientSecret;
     private final String userInfoRequestUrl;
+    private final List<String> scopes;
 
     public KakaoOAuthProperties(
-            String clientId, String redirectUri, String tokenBaseUrl, String clientSecret, String userInfoRequestUrl
+            String clientId, String redirectUri, String tokenBaseUrl, String clientSecret, String userInfoRequestUrl, List<String> scopes
     ) {
         this.clientId = requireClientId(clientId);
         this.redirectUri = requireRedirectUri(redirectUri);
         this.tokenBaseUrl = requireTokenBaseUrl(tokenBaseUrl);
         this.clientSecret = requireClientSecret(clientSecret);
         this.userInfoRequestUrl = requireUserInfoRequestUrl(userInfoRequestUrl);
+        this.scopes = scopes;
     }
 
     //이하 불변식
