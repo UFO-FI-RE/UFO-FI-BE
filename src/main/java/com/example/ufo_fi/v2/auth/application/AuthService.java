@@ -2,6 +2,7 @@ package com.example.ufo_fi.v2.auth.application;
 
 import com.example.ufo_fi.v2.auth.domain.OAuthAccount;
 import com.example.ufo_fi.v2.auth.domain.OAuthUserInfo;
+import com.example.ufo_fi.v2.user.domain.Role;
 import com.example.ufo_fi.v2.user.domain.User;
 import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class AuthService {
 
     private User signup(OAuthUserInfo oAuthUserInfo) {
         OAuthAccount oAuthAccount = oAuthUserInfo.getOAuthAccount();
-        User user = User.of(oAuthUserInfo.getId(), oAuthAccount.getEmail());
+        User user = User.of(oAuthUserInfo.getId(), oAuthAccount.getEmail(), Role.ROLE_USER);
         return userRepository.save(user);
     }
 }

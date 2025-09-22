@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -103,10 +102,11 @@ public class User {
         this.role = role;
     }
 
-    public static User of(String kakaoId, String email) {
+    public static User of(String kakaoId, String email, Role roleUser) {
         return User.builder()
                 .kakaoId(kakaoId)
                 .email(email)
+                .role(roleUser)
                 .build();
     }
 }

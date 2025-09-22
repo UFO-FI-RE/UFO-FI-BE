@@ -32,7 +32,7 @@ public class JwtProvider {
 
         return BEARER + Jwts.builder()
                 .claim(USER_ID_KEY, userId)
-                .claim(USER_ROLE_KEY, role)
+                .claim(USER_ROLE_KEY, role.name())
                 .expiration(Date.from(expiredTime))
                 .signWith(createDecodedSecretKey(jwtProperties.getSecret()))
                 .compact();
@@ -49,14 +49,14 @@ public class JwtProvider {
 
     public Role requireRole(String jwt) {
         Claims claims = parseClaimsOrThrow(jwt);
-        String role = claims.get(USER_ROLE_KEY, String.class);
-        if (role == null) {
+        String rawRole = claims.get(USER_ROLE_KEY, String.class);
+        if (rawRole == null) {
             throw new IllegalArgumentException("JWT에 사용자 ROLE 클레임이 없습니다.");
         }
         try {
-            return Role.valueOf(role);
+            return Role.valueOf(rawRole);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("알 수 없는 ROLE 값: " + role, e);
+            throw new IllegalArgumentException("알 수 없는 ROLE 값: " + rawRole, e);
         }
     }
 
