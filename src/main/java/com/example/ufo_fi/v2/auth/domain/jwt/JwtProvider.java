@@ -2,6 +2,9 @@ package com.example.ufo_fi.v2.auth.domain.jwt;
 
 import com.example.ufo_fi.v2.auth.config.JwtProperties;
 import com.example.ufo_fi.v2.user.domain.Role;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -35,8 +38,56 @@ public class JwtProvider {
                 .compact();
     }
 
+    public Long requireUserid(String jwt) {
+        Claims claims = parseClaimsOrThrow(jwt);
+        Number n = claims.get(USER_ID_KEY, Number.class);
+        if (n == null) {
+            throw new IllegalArgumentException("JWT에 사용자 ID 클레임이 없습니다.");
+        }
+        return n.longValue();
+    }
+
+    public Role requireRole(String jwt) {
+        Claims claims = parseClaimsOrThrow(jwt);
+        String role = claims.get(USER_ROLE_KEY, String.class);
+        if (role == null) {
+            throw new IllegalArgumentException("JWT에 사용자 ROLE 클레임이 없습니다.");
+        }
+        try {
+            return Role.valueOf(role);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("알 수 없는 ROLE 값: " + role, e);
+        }
+    }
+
     private SecretKey createDecodedSecretKey(String rawSecretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(rawSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Claims parseClaimsOrThrow(String rawJwt) {
+        String token = stripBearer(rawJwt);
+        try {
+            return Jwts.parser()
+                    .verifyWith(createDecodedSecretKey(jwtProperties.getSecret()))
+                    .clock(() -> Date.from(clock.instant()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new IllegalArgumentException("JWT가 만료되었습니다.", e);
+        } catch (JwtException e) {
+            throw new IllegalArgumentException("유효하지 않은 JWT입니다.", e);
+        }
+    }
+
+    private String stripBearer(String jwt) {
+        if (jwt == null || jwt.isBlank()) {
+            throw new IllegalArgumentException("Authorization 헤더가 비어있습니다.");
+        }
+        if (jwt.startsWith(BEARER)) {
+            return jwt.substring(BEARER.length()).trim();
+        }
+        throw new IllegalArgumentException("Authorization 헤더는 'Bearer <token>' 형식이어야 합니다.");
     }
 }
