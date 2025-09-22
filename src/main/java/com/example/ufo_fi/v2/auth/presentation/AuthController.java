@@ -1,46 +1,27 @@
 package com.example.ufo_fi.v2.auth.presentation;
 
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.LogoutService;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
-import com.example.ufo_fi.v2.auth.application.refresh.RefreshService;
-import com.example.ufo_fi.v2.auth.presentation.api.AuthApiSpec;
-import com.example.ufo_fi.v2.auth.presentation.dto.response.RefreshReissueRes;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.ufo_fi.v2.auth.application.AuthFacadeService;
+import com.example.ufo_fi.v2.auth.presentation.dto.KakaoCallBackParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthController implements AuthApiSpec {
-    private final LogoutService logoutService;
-    private final RefreshService refreshService;
+public class AuthController {
+    private final AuthFacadeService authFacadeService;
 
-
-    @Override
-    public ResponseEntity<ResponseBody<Void>> logout(
-        DefaultUserPrincipal defaultUserPrincipal,
-        HttpServletRequest request,
-        HttpServletResponse response
+    @GetMapping("/kakao")
+    public ResponseEntity<ResponseBody<Void>> kakaoLogin(
+            @ModelAttribute KakaoCallBackParam kakaoCallBackParam
     ) {
-        logoutService.logout(request, response, defaultUserPrincipal.getId());
-        return ResponseEntity.ok(ResponseBody.noContent());
-    }
+        String jwt = authFacadeService.kakaoLogin(kakaoCallBackParam);
 
-    /**
-     * 만약, JWT 토큰이 만료되어, API 호출에서 예외를 반환하였다면, 이 API를 호출해, Jwt토큰을 갱신해줘야 한다.
-     * response에 새롭게 갱신된 jwt 토큰을 호출해주어야 한다.
-     */
-    @Override
-    public ResponseEntity<ResponseBody<RefreshReissueRes>> reissueRefresh(
-        DefaultUserPrincipal defaultUserPrincipal,
-        HttpServletRequest request,
-        HttpServletResponse response) {
-        return ResponseEntity.ok(
-            ResponseBody.success(
-                refreshService.reissueJwt(defaultUserPrincipal, request, response)));
+        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwt)
+                .body(ResponseBody.noContent());
     }
-
 }

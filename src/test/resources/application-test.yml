@@ -1,18 +1,36 @@
 spring:
+  config:
+    activate:
+      on-profile: test
+
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:~/ufo_fi
     driver-class-name: org.h2.Driver
     username: sa
     password:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+oauth:
+  kakao:
+    client-id: test-clientId
+    client-secret: test-client-secret
+    redirect-uri: https://test-client-redirect-uri
+    token-base-url: https://kauth.kakao.com/oauth/token
+    user-info-request-url: https://kapi.kakao.com/v2/user/me
+    scope:
+      - account_email
 
 jwt:
-  secret: ${JWT_SECRET}
-  access-token-validity-ms: 50000000
-  refresh-token-validity-ms: 604800000
+  secret: 5Z+j99jYMA+kKsdq0zjEVSQsAeLEUTyzsdGZ5pas5eQ=
+  access-token-validity-ms: 10000
+  refresh-token-validity-ms: 10000
 
 payment:
   client-key: secretsecretsecret
@@ -20,7 +38,8 @@ payment:
   confirmUrl: secretsecretsecret
 
 firebase:
-  base-url: ${BASE_URL}
+  config-path: http://localhost:8080
+  base-url: http://localhost:8080
 
 slack:
   token: slackslackslack
