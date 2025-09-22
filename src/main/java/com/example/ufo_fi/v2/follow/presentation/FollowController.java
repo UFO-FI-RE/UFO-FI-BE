@@ -1,7 +1,7 @@
 package com.example.ufo_fi.v2.follow.presentation;
 
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.follow.application.FollowService;
 import com.example.ufo_fi.v2.follow.presentation.api.FollowApiSpec;
 import com.example.ufo_fi.v2.follow.presentation.dto.response.FollowerDeleteRes;
@@ -21,39 +21,33 @@ public class FollowController implements FollowApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<FollowingCreateRes>> createFollow(
-            Long followingId,
-            DefaultUserPrincipal defaultUserPrincipal
+            Long followingId
     ) {
         return ResponseEntity.ok(
                 ResponseBody.success(
-                        followService.createFollow(followingId, defaultUserPrincipal.getId())));
+                        followService.createFollow(followingId, AuthContextHolder.getUserId())));
     }
 
     @Override
     public ResponseEntity<ResponseBody<FollowerDeleteRes>> deleteFollow(
-            Long followingId,
-            DefaultUserPrincipal defaultUserPrincipal
+            Long followingId
     ) {
         return ResponseEntity.ok(
                 ResponseBody.success(
-                        followService.deleteFollower(followingId, defaultUserPrincipal.getId())));
+                        followService.deleteFollower(followingId, AuthContextHolder.getUserId())));
     }
 
     @Override
-    public ResponseEntity<ResponseBody<FollowersReadRes>> readFollowers(
-            DefaultUserPrincipal defaultUserPrincipal
-    ) {
+    public ResponseEntity<ResponseBody<FollowersReadRes>> readFollowers() {
         return ResponseEntity.ok(
                 ResponseBody.success(
-                        followService.readFollowers(defaultUserPrincipal.getId())));
+                        followService.readFollowers(AuthContextHolder.getUserId())));
     }
 
     @Override
-    public ResponseEntity<ResponseBody<FollowingsReadRes>> readFollowings(
-            DefaultUserPrincipal defaultUserPrincipal
-    ) {
+    public ResponseEntity<ResponseBody<FollowingsReadRes>> readFollowings() {
         return ResponseEntity.ok(
                 ResponseBody.success(
-                        followService.readFollowings(defaultUserPrincipal.getId())));
+                        followService.readFollowings(AuthContextHolder.getUserId())));
     }
 }

@@ -1,17 +1,13 @@
 package com.example.ufo_fi.global.log;
 
-import com.example.ufo_fi.global.exception.GlobalException;
 import com.example.ufo_fi.global.log.meta.BasicLogInfo;
 import com.example.ufo_fi.global.log.meta.PaymentLogMethodTrace;
 import com.example.ufo_fi.global.log.meta.PaymentLogTrace;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
 import com.example.ufo_fi.v2.payment.application.FailLogService;
 import com.example.ufo_fi.v2.payment.domain.payment.MetaDataKey;
 import com.example.ufo_fi.v2.payment.domain.payment.StateMetaData;
 import com.example.ufo_fi.v2.payment.domain.payment.entity.FailLog;
 import com.example.ufo_fi.v2.payment.infrastructure.toss.response.ConfirmResult;
-import com.example.ufo_fi.v2.payment.persistence.FailLogRepository;
-import com.example.ufo_fi.v2.payment.persistence.PaymentRepository;
 import com.example.ufo_fi.v2.payment.presentation.dto.request.ConfirmReq;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +16,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -126,16 +120,10 @@ public class PaymentLogTraceAspect {
     }
 
     private Long extractUserIdFromSecurityContextHolder() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof DefaultUserPrincipal userPrincipal) {
-            return userPrincipal.getId();
-        }
+        //if (principal instanceof DefaultUserPrincipal userPrincipal) {
+            //return userPrincipal.getId();
+        //}
         return null;
     }
 }

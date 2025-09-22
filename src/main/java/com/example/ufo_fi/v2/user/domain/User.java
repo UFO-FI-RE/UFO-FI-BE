@@ -1,7 +1,5 @@
 package com.example.ufo_fi.v2.user.domain;
 
-import com.example.ufo_fi.v2.auth.application.oauth.provider.OAuth2Response;
-import com.example.ufo_fi.v2.auth.domain.Refresh;
 import com.example.ufo_fi.v2.user.domain.profilephoto.ProfilePhoto;
 import com.example.ufo_fi.v2.userplan.presentation.dto.request.UserInfoReq;
 import jakarta.persistence.Column;
@@ -14,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,26 +59,9 @@ public class User {
     @Column(name = "role")
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "refresh_id")
-    private Refresh refresh;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
-
-    public static User of(OAuth2Response oAuth2Response, Role role, Integer zetAsset) {
-        return User.builder()
-            .kakaoId(oAuth2Response.getProviderId().toString())
-            .role(role)
-            .email(oAuth2Response.getEmail())
-            .zetAsset(zetAsset)
-            .build();
-    }
-
-    public void registerRefresh(final Refresh refresh) {
-        this.refresh = refresh;
-    }
 
     public void decreaseZetAsset(Integer totalZet) {
         this.zetAsset -= totalZet;
@@ -106,10 +86,6 @@ public class User {
         this.role = roleUser;
     }
 
-    public void deleteRefresh() {
-        this.refresh = null;
-    }
-
     public void updateNickname(String targetNickname) {
         this.nickname = targetNickname;
     }
@@ -124,5 +100,13 @@ public class User {
 
     public void updateRole(Role role) {
         this.role = role;
+    }
+
+    public static User of(String kakaoId, String email, Role roleUser) {
+        return User.builder()
+                .kakaoId(kakaoId)
+                .email(email)
+                .role(roleUser)
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.ufo_fi.v2.user.presentation;
 
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.user.presentation.dto.request.GrantUserRoleReq;
 import com.example.ufo_fi.v2.user.presentation.dto.response.ReportedUsersReadRes;
 import com.example.ufo_fi.v2.user.presentation.dto.request.UserNicknameUpdateReq;
@@ -8,10 +9,8 @@ import com.example.ufo_fi.v2.user.presentation.dto.response.UserNicknameUpdateRe
 import com.example.ufo_fi.v2.user.presentation.dto.response.AnotherUserInfoReadRes;
 import com.example.ufo_fi.v2.user.presentation.dto.response.UserRoleReadRes;
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
 import com.example.ufo_fi.v2.user.application.UserService;
 import com.example.ufo_fi.v2.user.presentation.api.UserApiSpec;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +24,12 @@ public class UserController implements UserApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<UserRoleReadRes>> readUserInfo(
-        DefaultUserPrincipal defaultUserPrincipal,
         HttpServletResponse response
     ) {
         return ResponseEntity.ok(
             ResponseBody.success(
                 userService.readUserInfo(
-                    defaultUserPrincipal.getId(), response)));
+                        AuthContextHolder.getUserId(), response)));
     }
 
     @Override
@@ -44,22 +42,19 @@ public class UserController implements UserApiSpec {
     }
 
     @Override
-    public ResponseEntity<ResponseBody<UserInfoReadRes>> readMyPageUserInfo(
-        DefaultUserPrincipal defaultUserPrincipal
-    ) {
+    public ResponseEntity<ResponseBody<UserInfoReadRes>> readMyPageUserInfo() {
         return ResponseEntity.ok(
             ResponseBody.success(
-                userService.readUserAndUserPlan(defaultUserPrincipal.getId())));
+                userService.readUserAndUserPlan(AuthContextHolder.getUserId())));
     }
 
     @Override
     public ResponseEntity<ResponseBody<UserNicknameUpdateRes>> updateMyPageUserNicknames(
-        DefaultUserPrincipal defaultUserPrincipal,
         UserNicknameUpdateReq userNicknameUpdateReq
     ) {
         return ResponseEntity.ok(
             ResponseBody.success(
-                userService.updateUserNicknames(defaultUserPrincipal.getId(), userNicknameUpdateReq)));
+                userService.updateUserNicknames(AuthContextHolder.getUserId(), userNicknameUpdateReq)));
     }
 
     @Override

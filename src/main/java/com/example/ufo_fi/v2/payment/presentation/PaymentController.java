@@ -1,7 +1,7 @@
 package com.example.ufo_fi.v2.payment.presentation;
 
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.payment.application.PaymentService;
 import com.example.ufo_fi.v2.payment.presentation.api.PaymentApiSpec;
 import com.example.ufo_fi.v2.payment.presentation.dto.request.ConfirmReq;
@@ -21,19 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController implements PaymentApiSpec {
 
     private final PaymentService chargeService;
-
     /**
      * 충전하기 요청
      * 결제 임시 정보 반환
      */
     @Override
     public ResponseEntity<ResponseBody<PaymentRes>> chargeZet(
-            PaymentReq paymentReq,
-            DefaultUserPrincipal defaultUserPrincipal) {
+            PaymentReq paymentReq
+    ) {
 
         return ResponseEntity
                 .ok(ResponseBody
-                        .success(chargeService.charge(defaultUserPrincipal.getId(), paymentReq)));
+                        .success(chargeService.charge(AuthContextHolder.getUserId(), paymentReq)));
     }
 
     /**
@@ -41,8 +40,8 @@ public class PaymentController implements PaymentApiSpec {
      */
     @Override
     public ResponseEntity<ResponseBody<ConfirmRes>> confirm(
-            ConfirmReq request,
-            DefaultUserPrincipal defaultUserPrincipal) {
+            ConfirmReq request
+    ) {
 
         return ResponseEntity
                 .ok(ResponseBody
@@ -50,8 +49,7 @@ public class PaymentController implements PaymentApiSpec {
     }
 
     public ResponseEntity<ResponseBody<ZetRecoveryRes>> zetRecovery(
-            ZetRecoveryReq zetRecoveryReq,
-            DefaultUserPrincipal defaultUserPrincipal
+            ZetRecoveryReq zetRecoveryReq
     ) {
         return ResponseEntity.ok(
                 ResponseBody.success(

@@ -1,11 +1,11 @@
 package com.example.ufo_fi.v2.report.presentation;
 
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.report.application.ReportService;
 import com.example.ufo_fi.v2.report.presentation.dto.request.ReportCreateReq;
 import com.example.ufo_fi.v2.report.presentation.dto.request.ReportRollBackReq;
 import com.example.ufo_fi.v2.report.presentation.dto.response.RollBackReportsReadRes;
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
 import com.example.ufo_fi.v2.report.presentation.api.ReportApiSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +19,10 @@ public class ReportController implements ReportApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<Void>> reportTradePost(
-        DefaultUserPrincipal defaultUserPrincipal,
         Long tradePostId,
         ReportCreateReq reportCreateReq
     ) {
-        reportService.reportTradePost(defaultUserPrincipal.getId(), tradePostId, reportCreateReq);
+        reportService.reportTradePost(AuthContextHolder.getUserId(), tradePostId, reportCreateReq);
         return ResponseEntity.ok(ResponseBody.noContent());
     }
 

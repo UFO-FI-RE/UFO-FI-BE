@@ -4,12 +4,10 @@ import com.example.ufo_fi.v2.report.presentation.dto.request.ReportCreateReq;
 import com.example.ufo_fi.v2.report.presentation.dto.request.ReportRollBackReq;
 import com.example.ufo_fi.v2.report.presentation.dto.response.RollBackReportsReadRes;
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +21,6 @@ public interface ReportApiSpec {
     @ApiResponse(useReturnTypeSchema = true)
     @PostMapping("/trade-posts/{tradePostId}/report")
     ResponseEntity<ResponseBody<Void>> reportTradePost(
-            @AuthenticationPrincipal DefaultUserPrincipal defaultUserPrincipal,
             @PathVariable Long tradePostId,
             @RequestBody ReportCreateReq reportCreateReq
     );

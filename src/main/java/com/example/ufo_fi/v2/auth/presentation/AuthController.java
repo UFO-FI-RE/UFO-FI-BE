@@ -21,7 +21,6 @@ public class AuthController {
     ) {
         String jwt = authFacadeService.kakaoLogin(kakaoCallBackParam);
 
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwt)
-                .body(ResponseBody.noContent());
+        return ResponseEntity.noContent().header(HttpHeaders.AUTHORIZATION, jwt).build();
     }
 }
