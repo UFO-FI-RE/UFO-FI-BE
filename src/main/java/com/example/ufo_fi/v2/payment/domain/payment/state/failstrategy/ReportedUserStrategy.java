@@ -1,8 +1,6 @@
 package com.example.ufo_fi.v2.payment.domain.payment.state.failstrategy;
 
 import com.example.ufo_fi.global.exception.GlobalException;
-import com.example.ufo_fi.v2.auth.application.jwt.JwtUtil;
-import com.example.ufo_fi.v2.auth.application.oauth.CookieUtil;
 import com.example.ufo_fi.v2.payment.domain.payment.MetaDataKey;
 import com.example.ufo_fi.v2.payment.domain.payment.StateMetaData;
 import com.example.ufo_fi.v2.payment.domain.payment.entity.Payment;
@@ -20,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RequiredArgsConstructor
 public class ReportedUserStrategy implements TossErrorHandleStrategy {
 
-    private final JwtUtil jwtUtil;
+    //private final JwtUtil jwtUtil;
     private final UserManager userManager;
 
     //User의 Role을 업데이트하고, JWT 토큰을 삭제합니다.
@@ -32,7 +30,7 @@ public class ReportedUserStrategy implements TossErrorHandleStrategy {
         if(attributes != null){
             HttpServletResponse response = attributes.getResponse();
             if(response != null){
-                jwtUtil.deleteJwtCookie(response);
+                //jwtUtil.deleteJwtCookie(response);
             }
         }
         User user = userManager.findById(payment.getUser().getId());

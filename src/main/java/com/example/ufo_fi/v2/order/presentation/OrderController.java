@@ -1,7 +1,7 @@
 package com.example.ufo_fi.v2.order.presentation;
 
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.order.application.OrderService;
 import com.example.ufo_fi.v2.order.presentation.api.OrderApiSpec;
 import com.example.ufo_fi.v2.order.presentation.dto.request.TradePostConfirmBulkReq;
@@ -23,20 +23,18 @@ public class OrderController implements OrderApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<SaleHistoriesRes>> readSaleHistories(
-        DefaultUserPrincipal defaultUserPrincipal
     ) {
         return ResponseEntity.ok(
             ResponseBody.success(
-                orderService.readSaleHistories(defaultUserPrincipal.getId())));
+                orderService.readSaleHistories(AuthContextHolder.getUserId())));
     }
 
     @Override
     public ResponseEntity<ResponseBody<PurchaseHistoriesRes>> readPurchaseHistories(
-        DefaultUserPrincipal defaultUserPrincipal
     ) {
         return ResponseEntity.ok(
             ResponseBody.success(
-                orderService.readPurchaseHistories(defaultUserPrincipal.getId())));
+                orderService.readPurchaseHistories(AuthContextHolder.getUserId())));
     }
 
     @Override
@@ -50,22 +48,20 @@ public class OrderController implements OrderApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<BulkPurchaseConfirmRes>> buyBulkPurchase(
-        TradePostConfirmBulkReq request,
-        DefaultUserPrincipal defaultUserPrincipal
+        TradePostConfirmBulkReq request
     ) {
 
         return ResponseEntity.ok(
             ResponseBody.success(
-                orderService.bulkPurchase(request, defaultUserPrincipal.getId())));
+                orderService.bulkPurchase(request, AuthContextHolder.getUserId())));
     }
 
     @Override
     public ResponseEntity<ResponseBody<TradePostPurchaseRes>> purchase(
-        DefaultUserPrincipal defaultUserPrincipal,
         TradePostPurchaseReq purchaseReq
     ) {
         return ResponseEntity.ok(
             ResponseBody.success(
-                orderService.purchase(defaultUserPrincipal.getId(), purchaseReq)));
+                orderService.purchase(AuthContextHolder.getUserId(), purchaseReq)));
     }
 }

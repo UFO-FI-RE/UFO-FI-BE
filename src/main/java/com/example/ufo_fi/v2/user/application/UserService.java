@@ -1,7 +1,5 @@
 package com.example.ufo_fi.v2.user.application;
 
-import com.example.ufo_fi.v2.auth.application.jwt.JwtUtil;
-import com.example.ufo_fi.v2.auth.application.oauth.CookieUtil;
 import com.example.ufo_fi.v2.tradepost.domain.TradePostStatus;
 import com.example.ufo_fi.v2.user.presentation.dto.request.GrantUserRoleReq;
 import com.example.ufo_fi.v2.user.presentation.dto.response.ReportedUsersReadRes;
@@ -42,8 +40,8 @@ public class UserService {
     private final TradePostManager tradePostManager;
     private final FollowManager followManager;
     private final UserMapper userMapper;
-    private final JwtUtil jwtUtil;
-    private final CookieUtil cookieUtil;
+    //private final JwtUtil jwtUtil;
+    //private final CookieUtil cookieUtil;
 
     @Value("${jwt.access-token-validity-ms}")
     private long jwtTokenValidityMs;
@@ -54,9 +52,9 @@ public class UserService {
         User user = userManager.findById(userId);
         String userPhoneNumber = userManager.getPhoneNumber(user);
 
-        String jwt = jwtUtil.generateJwt(user.getId(), user.getRole());
-        log.info(jwt);
-        cookieUtil.setResponseBasicCookie(JWT_KEY, jwt, jwtTokenValidityMs, response);
+        //String jwt = jwtUtil.generateJwt(user.getId(), user.getRole());
+        //log.info(jwt);
+        //cookieUtil.setResponseBasicCookie(JWT_KEY, jwt, jwtTokenValidityMs, response);
 
         return userMapper.toUserRoleReadRes(user.getRole(), userPhoneNumber);
     }

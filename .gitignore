@@ -43,3 +43,8 @@ src/main/resources/*.p12
 
 ### FCM key ###
 src/main/resources/*.json
+
+# Querydsl generated
+src/main/generated/
+src/querydsl/
+**/generated/**

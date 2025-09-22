@@ -1,7 +1,7 @@
 package com.example.ufo_fi.v2.notification.send.presentation;
 
 import com.example.ufo_fi.global.response.ResponseBody;
-import com.example.ufo_fi.v2.auth.application.principal.DefaultUserPrincipal;
+import com.example.ufo_fi.v2.auth.presentation.AuthContextHolder;
 import com.example.ufo_fi.v2.notification.send.application.FcmTokenService;
 import com.example.ufo_fi.v2.notification.send.presentation.api.FcmTokenApiSpec;
 import com.example.ufo_fi.v2.notification.send.presentation.dto.request.FcmTokenSaveReq;
@@ -18,11 +18,10 @@ public class FcmController implements FcmTokenApiSpec {
 
     @Override
     public ResponseEntity<ResponseBody<FcmTokenCommonRes>> saveToken(
-            FcmTokenSaveReq request,
-            DefaultUserPrincipal defaultUserPrincipal
+            FcmTokenSaveReq request
     ) {
         return ResponseEntity.ok(
                 ResponseBody.success(
-                        fcmTokenService.saveFcmToken(defaultUserPrincipal.getId(), request.getToken())));
+                        fcmTokenService.saveFcmToken(AuthContextHolder.getUserId(), request.getToken())));
     }
 }
