@@ -15,5 +15,9 @@ public class TradePostPurchaseRes {
     @Schema(description = "남은 ZET 총량")
     private Integer zetAsset;
 
-
+    public static TradePostPurchaseRes from(Integer zetAsset) {
+        return TradePostPurchaseRes.builder()
+                .zetAsset(zetAsset)
+                .build();
+    }
 }
