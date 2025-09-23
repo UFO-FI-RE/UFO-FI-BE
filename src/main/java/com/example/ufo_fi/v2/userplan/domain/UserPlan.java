@@ -115,4 +115,8 @@ public class UserPlan {
 
         this.sellableDataAmount -= dataAmountToSell;
     }
+
+    public Plan findUserPlan() {
+        return this.plan;
+    }
 }

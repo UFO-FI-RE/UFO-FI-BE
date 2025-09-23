@@ -33,7 +33,7 @@ public class UserInfoReadRes {
     @Schema(description = "프사입니다.")
     private String profilePhotoUrl;
 
-    public static UserInfoReadRes of(final User user, final UserPlan userPlan, final Plan plan){
+    public static UserInfoReadRes of(User user, UserPlan userPlan, Plan plan){
         return UserInfoReadRes.builder()
                 .nickname(user.getNickname())
                 .email(user.getEmail())
