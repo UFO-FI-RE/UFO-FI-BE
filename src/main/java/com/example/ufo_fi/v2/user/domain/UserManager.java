@@ -30,11 +30,11 @@ public class UserManager {
         }
     }
 
-    public User findById(Long userId) {
-
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
-    }
+    // public User findById(Long userId) {
+    //
+    //    return userRepository.findById(userId)
+    //            .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
+    // }
 
     public void updateUserNickname(
             User user, UserInfoReq userInfoReq, String randomNickname, ProfilePhoto randomProfilePhoto
@@ -50,12 +50,11 @@ public class UserManager {
         user.updateNickname(nickname + String.format(" #%03d", userId));
     }
 
-    public void updateUserRole(User user, Role role) {
-        user.updateRole(role);
-    }
+    // public void updateUserRole(User user, Role role) {
+    //     user.updateRole(role);
+    // }
 
     public Page<User> findAllByRole(Role role, PageRequest pageRequest) {
-
         return userRepository.findAllByRole(role, pageRequest);
     }
 

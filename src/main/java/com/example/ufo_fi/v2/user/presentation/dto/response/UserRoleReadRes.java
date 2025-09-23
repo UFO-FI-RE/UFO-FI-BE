@@ -1,6 +1,7 @@
 package com.example.ufo_fi.v2.user.presentation.dto.response;
 
 import com.example.ufo_fi.v2.user.domain.Role;
+import com.example.ufo_fi.v2.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +25,10 @@ public class UserRoleReadRes {
     @Schema(description = "유저의 핸드폰 번호")
     private String phoneNumber;
 
-    public static UserRoleReadRes from(Role role, String phoneNumber) {
+    public static UserRoleReadRes from(User user) {
         return UserRoleReadRes.builder()
-                .role(role)
-                .phoneNumber(phoneNumber)
+                .role(user.getRole())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }

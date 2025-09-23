@@ -33,16 +33,6 @@ public class AnotherUserInfoReadRes {
     @Schema(description = "이 사람이 올린 게시물들")
     private List<TradePostRes> tradePostsRes;
 
-    public static AnotherUserInfoReadRes of(User user, Long followerCount, Long followingCount) {
-        return AnotherUserInfoReadRes.builder()
-            .userId(user.getId())
-            .nickname(user.getNickname())
-            .profileImageUrl(user.getProfilePhoto().getProfilePhotoUrl())
-            .followerCount(followerCount)
-            .followingCount(followingCount)
-            .build();
-    }
-
     public static AnotherUserInfoReadRes of(User user, Long followerCount, Long followingCount,
         List<TradePost> tradePosts) {
         return AnotherUserInfoReadRes.builder()
@@ -54,4 +44,14 @@ public class AnotherUserInfoReadRes {
             .tradePostsRes(tradePosts.stream().map(TradePostRes::from).toList())
             .build();
     }
+
+    // public static AnotherUserInfoReadRes of(User user, Long followerCount, Long followingCount) {
+    //    return AnotherUserInfoReadRes.builder()
+    //            .userId(user.getId())
+    //            .nickname(user.getNickname())
+    //            .profileImageUrl(user.getProfilePhoto().getProfilePhotoUrl())
+    //            .followerCount(followerCount)
+    //            .followingCount(followingCount)
+    //            .build();
+    //}
 }

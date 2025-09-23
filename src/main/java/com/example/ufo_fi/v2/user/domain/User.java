@@ -63,12 +63,13 @@ public class User {
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
-    public void decreaseZetAsset(Integer totalZet) {
-        this.zetAsset -= totalZet;
-    }
-
-    public void increaseZetAsset(Integer totalZet) {
-        this.zetAsset += totalZet;
+    public static User of(String kakaoId, String email, Role roleUser) {
+        return User.builder()
+                .kakaoId(kakaoId)
+                .email(email)
+                .phoneNumber("")
+                .role(roleUser)
+                .build();
     }
 
     public void signup(
@@ -86,6 +87,14 @@ public class User {
         this.role = roleUser;
     }
 
+    public void decreaseZetAsset(Integer totalZet) {
+        this.zetAsset -= totalZet;
+    }
+
+    public void increaseZetAsset(Integer totalZet) {
+        this.zetAsset += totalZet;
+    }
+
     public void updateNickname(String targetNickname) {
         this.nickname = targetNickname;
     }
@@ -95,18 +104,13 @@ public class User {
     }
 
     public void updateRoleUser() {
+        if(this.role == Role.ROLE_REPORTED){
+            throw new IllegalArgumentException("정지된 사용자는 역할을 업데이트 할 수 없습니다.");
+        }
         this.role = Role.ROLE_USER;
     }
 
-    public void updateRole(Role role) {
-        this.role = role;
-    }
-
-    public static User of(String kakaoId, String email, Role roleUser) {
-        return User.builder()
-                .kakaoId(kakaoId)
-                .email(email)
-                .role(roleUser)
-                .build();
-    }
+//    public void updateRole(Role role) {
+//        this.role = role;
+//    }
 }

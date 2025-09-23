@@ -17,9 +17,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public UserRoleReadRes toUserRoleReadRes(Role role, String userPhoneNumber) {
-        return UserRoleReadRes.from(role, userPhoneNumber);
-    }
+    // public UserRoleReadRes toUserRoleReadRes(Role role, String userPhoneNumber) {
+    //    return UserRoleReadRes.from(role, userPhoneNumber);
+    //}
 
     public AnotherUserInfoReadRes toAnotherUserInfoReadRes(
         User anotherUser, List<TradePost> tradePosts, Long followerCount, Long followingCount
