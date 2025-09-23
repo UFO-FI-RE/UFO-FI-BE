@@ -52,9 +52,11 @@ public class FollowManager {
         return followRepository.findAllFollowingsWithUser(userId);
     }
 
+    /*  follow 엔티티 불변식으로 검증
     public void validateFollow(Long followingId, Long followerId) {
         if (followerId == followingId) {
             throw new GlobalException(FollowErrorCode.CANT_FOLLOW_MYSELF);
         }
     }
+    */
 }
