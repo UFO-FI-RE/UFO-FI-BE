@@ -1,6 +1,8 @@
 package com.example.ufo_fi.v2.user.domain;
 
+import com.example.ufo_fi.global.exception.GlobalException;
 import com.example.ufo_fi.v2.user.domain.profilephoto.ProfilePhoto;
+import com.example.ufo_fi.v2.user.exception.UserErrorCode;
 import com.example.ufo_fi.v2.userplan.presentation.dto.request.UserInfoReq;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -108,5 +110,11 @@ public class User {
                 .email(email)
                 .role(roleUser)
                 .build();
+    }
+
+    public void hasRemainZetOverBy(Integer totalZet) {
+        if (this.zetAsset < totalZet) {
+            throw new GlobalException(UserErrorCode.LACK_ZET);
+        }
     }
 }

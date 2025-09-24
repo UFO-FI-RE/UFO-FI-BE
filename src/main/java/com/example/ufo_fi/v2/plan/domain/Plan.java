@@ -45,4 +45,8 @@ public class Plan {
     @Enumerated(EnumType.STRING)
     @Column(name = "mobile_data_type", nullable = false)
     private MobileDataType mobileDataType;
+
+    public boolean isEqualBy(Carrier carrier) {
+        return this.carrier == carrier;
+    }
 }
