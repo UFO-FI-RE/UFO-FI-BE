@@ -14,6 +14,8 @@ import com.example.ufo_fi.v2.user.domain.UserManager;
 import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import com.example.ufo_fi.v2.userplan.domain.UserPlan;
 import com.example.ufo_fi.v2.userplan.domain.UserPlanManager;
+import com.example.ufo_fi.v2.userplan.exception.UserPlanErrorCode;
+import com.example.ufo_fi.v2.userplan.persistence.UserPlanRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,19 +24,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BulkPurchaseFailureHandler {
 
-    private final EntityManager entityManager;
-    private final UserManager userManager;
-    private final UserPlanManager userPlanManager;
+    //private final EntityManager entityManager;
+    //private final UserManager userManager;
+    //private final UserPlanManager userPlanManager;
 
     private final UserRepository userRepository;
+    private final UserPlanRepository userPlanRepository;
 
     public void handleFailure(TradePost tradePost, Long buyerId, PurchaseResult purchaseResult) {
         //User seller = userManager.findById(tradePost.getUser().getId());
+        //UserPlan buyerPlan = userPlanManager.findByUser(
+        //        entityManager.getReference(User.class, buyerId));
 
         User seller = userRepository.findById(tradePost.getUser().getId())
                 .orElseThrow(() -> new GlobalException(OrderErrorCode.SELLER_NOT_NULL));
-        UserPlan buyerPlan = userPlanManager.findByUser(
-            entityManager.getReference(User.class, buyerId));
+        User buyer = userRepository.getReferenceById(buyerId);
+        UserPlan buyerPlan = userPlanRepository.findByUser(buyer)
+                .orElseThrow(() -> new GlobalException(UserPlanErrorCode.NOT_FOUND_USER_PLAN));
 
         String failReason = getFailReason(tradePost, buyerPlan, buyerId);
 

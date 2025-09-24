@@ -20,6 +20,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -80,6 +82,21 @@ public class TradePost {
     @OneToMany(mappedBy = "tradePost")
     @Builder.Default
     private List<Report> reports = new ArrayList<>();
+
+    public static TradePost of(
+            User user, String title, Integer zetPerUnit, Integer sellMobileDataCapacityGb, Carrier carrier,
+            MobileDataType mobileDataType, TradePostStatus tradePostStatus
+    ) {
+        return TradePost.builder()
+                .user(user)
+                .title(title)
+                .zetPerUnit(zetPerUnit)
+                .sellMobileDataCapacityGb(sellMobileDataCapacityGb)
+                .carrier(carrier)
+                .mobileDataType(mobileDataType)
+                .tradePostStatus(tradePostStatus)
+                .build();
+    }
 
 
     public void saveTotalPrice() {
@@ -174,5 +191,50 @@ public class TradePost {
         YearMonth created = YearMonth.from(this.createdAt);
         YearMonth current = YearMonth.from(LocalDateTime.now());
         return !current.isAfter(created.plusMonths(1));
+    }
+
+    //불변식 모음
+    private MobileDataType requireMobileDataType(MobileDataType mobileDataType) {
+        if (mobileDataType == null) throw new GlobalException(TradePostErrorCode.MOBILE_DATA_TYPE_NOT_NULL);
+        return mobileDataType;
+    }
+
+    private Carrier requireCarrier(Carrier carrier) {
+        if (carrier == null) throw new GlobalException(TradePostErrorCode.CARRIER_NOT_NULL);
+        return carrier;
+    }
+
+    private Integer requireSellMobileDataCapacityGb(Integer sellMobileDataCapacityGb) {
+        if (sellMobileDataCapacityGb == null) throw new GlobalException(TradePostErrorCode.CAPACITY_NOT_NULL);
+        if (sellMobileDataCapacityGb <= 0) throw new GlobalException(TradePostErrorCode.INVALID_CAPACITY);
+        return sellMobileDataCapacityGb;
+    }
+
+    private String requireTitle(String title) {
+        if (title == null || title.isBlank()) throw new GlobalException(TradePostErrorCode.TITLE_NOT_NULL);
+        if (title.length() > 60) throw new GlobalException(TradePostErrorCode.TITLE_TOO_LONG);
+        return title;
+    }
+
+    private Integer requireZetPerUnit(Integer zetPerUnit) {
+        if (zetPerUnit == null) throw new GlobalException(TradePostErrorCode.ZET_PER_UNIT_NOT_NULL);
+        if (zetPerUnit <= 0) throw new GlobalException(TradePostErrorCode.INVALID_ZET_PER_UNIT);
+        return zetPerUnit;
+    }
+
+    private Integer requireTotalZet(Integer totalZet) {
+        if (totalZet == null) throw new GlobalException(TradePostErrorCode.TOTAL_ZET_NOT_NULL);
+        if (totalZet <= 0) throw new GlobalException(TradePostErrorCode.INVALID_TOTAL_ZET);
+        return totalZet;
+    }
+
+    private TradePostStatus requireTradePostStatus(TradePostStatus tradePostStatus) {
+        if (tradePostStatus == null) throw new GlobalException(TradePostErrorCode.STATUS_NOT_NULL);
+        return tradePostStatus;
+    }
+
+    private User requireUser(User user) {
+        if (user == null) throw new GlobalException(TradePostErrorCode.USER_NOT_NULL);
+        return user;
     }
 }

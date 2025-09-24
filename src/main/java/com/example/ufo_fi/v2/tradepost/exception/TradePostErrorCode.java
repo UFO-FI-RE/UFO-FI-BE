@@ -1,6 +1,7 @@
 package com.example.ufo_fi.v2.tradepost.exception;
 
 import com.example.ufo_fi.global.exception.ErrorCode;
+import com.google.api.Http;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,20 @@ public enum TradePostErrorCode implements ErrorCode {
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요금제가 없습니다."),
     CANT_PURCHASE_MYSELF(HttpStatus.INTERNAL_SERVER_ERROR, "본인의 게시물은 구매를 할 수 없습니다."),
     ZET_LACK(HttpStatus.INTERNAL_SERVER_ERROR, "zet가 부족합니다. 충전 페이지로 이동합니까?"),
-    DTO_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, " 응답 생성중 문제");
+    DTO_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, " 응답 생성중 문제"),
+    MOBILE_DATA_TYPE_NOT_NULL(HttpStatus.BAD_REQUEST, "mobileDataType은 null일 수 없습니다."),
+    CARRIER_NOT_NULL(HttpStatus.BAD_REQUEST, "carrier는 null일 수 없습니다."),
+    CAPACITY_NOT_NULL(HttpStatus.BAD_REQUEST, "capacity는 null일 수 없습니다."),
+    INVALID_CAPACITY(HttpStatus.BAD_REQUEST, "capacity는 양수여야 합니다."),
+    TITLE_NOT_NULL(HttpStatus.BAD_REQUEST, "title은 null일 수 없습니다."),
+    TITLE_TOO_LONG(HttpStatus.BAD_REQUEST, "title이 너무 깁니다."),
+    ZET_PER_UNIT_NOT_NULL(HttpStatus.BAD_REQUEST, "1zet 당 데이터는 null일 수 없습니다."),
+    INVALID_ZET_PER_UNIT(HttpStatus.BAD_REQUEST, "1zet 당 데이터는 양수여야 합니다."),
+    TOTAL_ZET_NOT_NULL(HttpStatus.BAD_REQUEST, "total zet는 null일 수 없습니다."),
+    INVALID_TOTAL_ZET(HttpStatus.BAD_REQUEST, "total zet는 양수여야 합니다."),
+    STATUS_NOT_NULL(HttpStatus.BAD_REQUEST, "status는 null일 수 없습니다."),
+    USER_NOT_NULL(HttpStatus.BAD_REQUEST, "판매자는 null일 수 없습니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;
