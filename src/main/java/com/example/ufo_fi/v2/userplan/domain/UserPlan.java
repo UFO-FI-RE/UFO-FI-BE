@@ -4,6 +4,7 @@ import com.example.ufo_fi.global.exception.GlobalException;
 import com.example.ufo_fi.v2.plan.domain.Plan;
 import com.example.ufo_fi.v2.tradepost.exception.TradePostErrorCode;
 import com.example.ufo_fi.v2.user.domain.User;
+import com.example.ufo_fi.v2.userplan.exception.UserPlanErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -94,6 +95,9 @@ public class UserPlan {
     }
 
     public void update(Plan plan) {
+        if(!this.sellableDataAmount.equals(this.plan.getSellMobileDataCapacityGb())){
+            throw new GlobalException(UserPlanErrorCode.CANT_UPDATE_USER_PLAN);
+        }
         this.plan = plan;
         this.sellableDataAmount = plan.getSellMobileDataCapacityGb();
     }

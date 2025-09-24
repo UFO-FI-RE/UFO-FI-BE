@@ -18,7 +18,7 @@ public class UserPlanMapper {
     }
 
     public UserPlanReadRes toUserPlanReadRes(UserPlan userPlan, Plan plan) {
-        return UserPlanReadRes.of(userPlan, plan);
+        return UserPlanReadRes.of(plan);
     }
 
     public UserPlanUpdateRes toUserPlanUpdateRes(UserPlan userPlan) {

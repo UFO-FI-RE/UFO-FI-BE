@@ -31,7 +31,7 @@ public class UserPlanReadRes {
     @Schema(description = "판매 가능한 모바일 데이터량(실재 판매하는 유동적인 값이 아닌 그저 기준)")
     private Integer sellMobileDataCapacity;
 
-    public static UserPlanReadRes of(UserPlan userPlan, Plan plan) {
+    public static UserPlanReadRes of(Plan plan) {
         return UserPlanReadRes.builder()
                 .planId(plan.getId())
                 .planName(plan.getName())
