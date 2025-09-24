@@ -109,6 +109,9 @@ public class OrderService {
      *                    7. 파는 사람에게 알림을 보내기 위한 이벤트를 발행합니다.
      *                    8. dto 반환
      */
+    /**
+     * TODO: 주문 내역 조회와 주문 분리하기!
+     */
     @Transactional
     public TradePostPurchaseRes purchase(Long userId, TradePostPurchaseReq purchaseReq) {
         //User buyer = userManager.validateUserExistence(userId);                     //사는 사람
