@@ -84,7 +84,7 @@ public class UserPlanService {
                 .orElseThrow(() -> new GlobalException(UserPlanErrorCode.NOT_FOUND_USER_PLAN));
         Plan plan = userPlan.findUserPlan();
 
-        return UserPlanReadRes.of(plan);
+        return UserPlanReadRes.from(plan);
     }
 
     @Transactional

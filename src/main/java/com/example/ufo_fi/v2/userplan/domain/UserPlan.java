@@ -15,10 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "user_plans")
@@ -47,12 +44,12 @@ public class UserPlan {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    public static UserPlan from(final Plan plan) {
-        return UserPlan.builder()
-            .sellableDataAmount(plan.getSellMobileDataCapacityGb())
-            .purchaseDataAmount(0)
-            .plan(plan)
-            .build();
+    @Builder(access = AccessLevel.PRIVATE)
+    private UserPlan(Integer sellableDataAmount, Integer purchaseDataAmount, User user, Plan plan) {
+        this.sellableDataAmount = sellableDataAmount;
+        this.purchaseDataAmount = purchaseDataAmount;
+        this.user = user;
+        this.plan = plan;
     }
 
     public static UserPlan of(Plan plan, User user) {
@@ -116,7 +113,6 @@ public class UserPlan {
         if (dataAmountToSell > this.sellableDataAmount) {
             throw new GlobalException(TradePostErrorCode.EXCEED_SELL_CAPACITY);
         }
-
         this.sellableDataAmount -= dataAmountToSell;
     }
 
