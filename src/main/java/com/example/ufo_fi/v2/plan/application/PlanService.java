@@ -33,8 +33,17 @@ public class PlanService {
         if(rawCarrier.startsWith("LG")){
             rawCarrier = "LGU";
         }
+        if(!hasCarrier(rawCarrier)) {
+            throw new GlobalException(PlanErrorCode.INVALID_CARRIER);
+        }
         List<Plan> plans = planRepository.findAllByCarrier(Carrier.valueOf(rawCarrier));
 
         return PlansReadRes.from(plans);
+    }
+
+    private boolean hasCarrier(String rawCarrier) {
+        return  Carrier.KT.hasCarrierBy(rawCarrier) ||
+                Carrier.LGU.hasCarrierBy(rawCarrier) ||
+                Carrier.SKT.hasCarrierBy(rawCarrier);
     }
 }
