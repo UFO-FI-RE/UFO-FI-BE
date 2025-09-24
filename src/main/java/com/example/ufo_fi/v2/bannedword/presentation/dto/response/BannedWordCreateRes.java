@@ -1,6 +1,8 @@
 package com.example.ufo_fi.v2.bannedword.presentation.dto.response;
 
 
+import com.example.ufo_fi.v2.bannedword.domain.BannedWord;
+import com.example.ufo_fi.v2.bannedword.persistence.BannedWordRepository;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +22,10 @@ public class BannedWordCreateRes {
     @Schema(description = "금칙어 문자열", example = "시발")
     private String word;
 
+    public static BannedWordCreateRes from(BannedWord bannedWord) {
+        return BannedWordCreateRes.builder()
+                .id(bannedWord.getId())
+                .word(bannedWord.getWord())
+                .build();
+    }
 }
