@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class InterestedPostMapper {
-    public InterestedPostRes toInterestedPostRes(InterestedPost interestedPost, List<InterestedCarriers> interestedCarriers) {
+    public InterestedPostRes toInterestedPostRes(List<InterestedCarriers> interestedCarriers, InterestedPost interestedPost) {
         return InterestedPostRes.builder()
                 .carriers(interestedCarriers)
                 .interestedMaxCapacity(interestedPost.getInterestedMaxCapacity())
