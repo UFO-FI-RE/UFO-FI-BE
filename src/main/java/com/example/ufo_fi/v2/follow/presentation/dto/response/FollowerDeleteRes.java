@@ -14,4 +14,10 @@ public class FollowerDeleteRes {
 
     @Schema(description = "내가 삭제한 팔로우 식별번호")
     private Long id;
+
+    public static FollowerDeleteRes from(Long followingId) {
+        return FollowerDeleteRes.builder()
+                .id(followingId)
+                .build();
+    }
 }
