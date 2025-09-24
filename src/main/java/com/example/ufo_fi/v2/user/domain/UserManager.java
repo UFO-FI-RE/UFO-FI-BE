@@ -36,11 +36,11 @@ public class UserManager {
     //            .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
     // }
 
-    public void updateUserNickname(
-            User user, UserInfoReq userInfoReq, String randomNickname, ProfilePhoto randomProfilePhoto
-    ) {
-        user.signup(userInfoReq, randomNickname, randomProfilePhoto, true, Role.ROLE_USER);
-    }
+    // public void updateUserNickname(
+    //        User user, UserInfoReq userInfoReq, String randomNickname, ProfilePhoto randomProfilePhoto
+    // ) {
+    //     user.signup(userInfoReq, randomNickname, randomProfilePhoto, true, Role.ROLE_USER);
+    //}
 
     public String getPhoneNumber(User user) {
         return user.getPhoneNumber() != null ? user.getPhoneNumber() : "";

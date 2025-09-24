@@ -43,6 +43,7 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
+    // TODO : phoneNumber는 규칙을 가지고 있기에 불변 객체로 만들기
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -72,17 +73,15 @@ public class User {
                 .build();
     }
 
-    public void signup(
-        UserInfoReq userInfoReq,
-        String randomNickname,
-        ProfilePhoto randomProfilePhoto,
+    public void updateUserBaseInfo(
+        String name,
+        String phoneNumber,
         boolean activeStatus,
         Role roleUser
     ) {
-        this.name = userInfoReq.getName();
-        this.phoneNumber = userInfoReq.getPhoneNumber();
-        this.nickname = randomNickname;
-        this.profilePhoto = randomProfilePhoto;
+        assertNotSuspended();
+        this.name = name;
+        this.phoneNumber = phoneNumber;
         this.isActive = activeStatus;
         this.role = roleUser;
     }
@@ -104,10 +103,14 @@ public class User {
     }
 
     public void updateRoleUser() {
-        if(this.role == Role.ROLE_REPORTED){
-            throw new IllegalArgumentException("정지된 사용자는 역할을 업데이트 할 수 없습니다.");
-        }
+        assertNotSuspended();
         this.role = Role.ROLE_USER;
+    }
+
+    private void assertNotSuspended() {
+        if(this.role == Role.ROLE_REPORTED){
+            throw new IllegalStateException("정지된 사용자는 어떤 동작도 할 수 없습니다.");
+        }
     }
 
 //    public void updateRole(Role role) {
