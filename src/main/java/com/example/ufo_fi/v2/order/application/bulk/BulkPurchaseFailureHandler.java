@@ -5,10 +5,13 @@ import static com.example.ufo_fi.v2.tradepost.domain.TradePostStatus.EXPIRED;
 import static com.example.ufo_fi.v2.tradepost.domain.TradePostStatus.REPORTED;
 import static com.example.ufo_fi.v2.tradepost.domain.TradePostStatus.SOLD_OUT;
 
+import com.example.ufo_fi.global.exception.GlobalException;
+import com.example.ufo_fi.v2.order.exception.OrderErrorCode;
 import com.example.ufo_fi.v2.tradepost.domain.TradePost;
 import com.example.ufo_fi.v2.tradepost.domain.TradePostStatus;
 import com.example.ufo_fi.v2.user.domain.User;
 import com.example.ufo_fi.v2.user.domain.UserManager;
+import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import com.example.ufo_fi.v2.userplan.domain.UserPlan;
 import com.example.ufo_fi.v2.userplan.domain.UserPlanManager;
 import jakarta.persistence.EntityManager;
@@ -23,8 +26,13 @@ public class BulkPurchaseFailureHandler {
     private final UserManager userManager;
     private final UserPlanManager userPlanManager;
 
+    private final UserRepository userRepository;
+
     public void handleFailure(TradePost tradePost, Long buyerId, PurchaseResult purchaseResult) {
-        User seller = userManager.findById(tradePost.getUser().getId());
+        //User seller = userManager.findById(tradePost.getUser().getId());
+
+        User seller = userRepository.findById(tradePost.getUser().getId())
+                .orElseThrow(() -> new GlobalException(OrderErrorCode.SELLER_NOT_NULL));
         UserPlan buyerPlan = userPlanManager.findByUser(
             entityManager.getReference(User.class, buyerId));
 

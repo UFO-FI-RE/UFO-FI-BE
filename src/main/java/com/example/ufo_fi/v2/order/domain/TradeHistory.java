@@ -68,7 +68,7 @@ public class TradeHistory {
     }
 
     private User requireUser(User user) {
-        if(user == null) throw new GlobalException(OrderErrorCode.USER_NOT_NULL);
+        if(user == null) throw new GlobalException(OrderErrorCode.SELLER_NOT_NULL);
         return user;
     }
 
