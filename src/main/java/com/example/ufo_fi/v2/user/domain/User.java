@@ -66,15 +66,6 @@ public class User {
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
-    public static User of(String kakaoId, String email, Role roleUser) {
-        return User.builder()
-                .kakaoId(kakaoId)
-                .email(email)
-                .phoneNumber("")
-                .role(roleUser)
-                .build();
-    }
-
     public void updateUserBaseInfo(
         String name,
         String phoneNumber,
@@ -118,11 +109,12 @@ public class User {
     public void updateRole(Role role) {
         this.role = role;
     }
-  
+
     public static User of(String kakaoId, String email, Role roleUser) {
         return User.builder()
                 .kakaoId(kakaoId)
                 .email(email)
+                .phoneNumber("")
                 .role(roleUser)
                 .build();
     }
