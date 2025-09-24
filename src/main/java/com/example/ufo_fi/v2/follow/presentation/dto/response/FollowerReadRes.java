@@ -1,11 +1,15 @@
 package com.example.ufo_fi.v2.follow.presentation.dto.response;
 
+import com.example.ufo_fi.v2.follow.domain.Follow;
 import com.example.ufo_fi.v2.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -31,5 +35,24 @@ public class FollowerReadRes {
             .nickname(followingUser.getNickname())
             .profilePhotoUrl(followingUser.getProfilePhoto().getProfilePhotoUrl())
             .build();
+    }
+
+    //리팩토링 해야함
+    public static FollowersReadRes of(final List<Follow> followers, final Set<Long> myFollowings) {
+        return FollowersReadRes.builder()
+                .followersReadRes(
+                        followers.stream()
+                                .map(follow -> {
+                                    User follower = follow.getFollowerUser();
+                                    return FollowerReadRes.builder()
+                                            .id(follower.getId())
+                                            .nickname(follower.getNickname())
+                                            .profilePhotoUrl(follower.getProfilePhoto().getProfilePhotoUrl())
+                                            .isFollowing(myFollowings.contains(follower.getId()))
+                                            .build();
+                                })
+                                .toList()
+                )
+                .build();
     }
 }

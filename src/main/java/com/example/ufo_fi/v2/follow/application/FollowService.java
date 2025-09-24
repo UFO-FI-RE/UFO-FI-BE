@@ -1,16 +1,19 @@
 package com.example.ufo_fi.v2.follow.application;
 
 
+import com.example.ufo_fi.global.exception.GlobalException;
 import com.example.ufo_fi.v2.follow.domain.Follow;
 import com.example.ufo_fi.v2.follow.domain.FollowManager;
-import com.example.ufo_fi.v2.follow.presentation.dto.response.FollowerDeleteRes;
-import com.example.ufo_fi.v2.follow.presentation.dto.response.FollowersReadRes;
-import com.example.ufo_fi.v2.follow.presentation.dto.response.FollowingCreateRes;
-import com.example.ufo_fi.v2.follow.presentation.dto.response.FollowingsReadRes;
+import com.example.ufo_fi.v2.follow.exception.FollowErrorCode;
+import com.example.ufo_fi.v2.follow.persistence.FollowRepository;
+import com.example.ufo_fi.v2.follow.presentation.dto.response.*;
 import com.example.ufo_fi.v2.user.domain.User;
 import com.example.ufo_fi.v2.user.domain.UserManager;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.example.ufo_fi.v2.user.exception.UserErrorCode;
+import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FollowService {
 
-    private final FollowManager followManager;
-    private final UserManager userManager;
-    private final FollowMapper followMapper;
+    private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     /**
      * @param followingId : 내가 팔로우할 유저
@@ -35,14 +37,24 @@ public class FollowService {
      */
     @Transactional
     public FollowingCreateRes createFollow(Long followingId, Long followerId) {
-        followManager.validateFollow(followingId, followerId);
-        User follower = userManager.findById(followerId);
-        User following = userManager.findById(followingId);
+        //followManager.validateFollow(followingId, followerId);
+        //User follower = userManager.findById(followerId);
+        //User following = userManager.findById(followingId);
+        //Follow newFollow = Follow.of(follower, following);
+        //Follow savedFollow = followManager.saveFollow(newFollow);
+        //return FollowingCreateRes.from(savedFollow.getId());
+
+        User follower = findById(followerId);
+        User following = findById(followingId);
+
+        if(followRepository.findByFollowingUserIdAndFollowerUserId(followingId, followerId).isPresent()){
+            throw new GlobalException(FollowErrorCode.ALREADY_FOLLOW);
+        }
 
         Follow newFollow = Follow.of(follower, following);
-        Follow savedFollow = followManager.saveFollow(newFollow);
+        Follow savedFollow = followRepository.save(newFollow);
 
-        return followMapper.toFollowingCreateRes(savedFollow);
+        return FollowingCreateRes.from(savedFollow.getId());
     }
 
     /**
@@ -55,10 +67,15 @@ public class FollowService {
      */
     @Transactional
     public FollowerDeleteRes deleteFollower(Long followingId, Long userId) {
-        Follow follow = followManager.findFollowingIdAndFollowerId(followingId, userId);
-        followManager.deleteFollow(follow);
+        //Follow follow = followManager.findFollowingIdAndFollowerId(followingId, userId);
+        //followManager.deleteFollow(follow);
+        //return followMapper.toFollowerDeleteRes(followingId);
 
-        return followMapper.toFollowerDeleteRes(followingId);
+        Follow follow = followRepository.findByFollowingUserIdAndFollowerUserId(followingId, userId)
+                .orElseThrow(() -> new GlobalException(FollowErrorCode.FOLLOW_NOT_FOUND));
+        followRepository.delete(follow);
+
+        return FollowerDeleteRes.from(followingId);
     }
 
     /**
@@ -68,13 +85,20 @@ public class FollowService {
      *               2. dto 반환
      */
     public FollowersReadRes readFollowers(Long userId) {
-        List<Follow> followers = followManager.findAllFollowers(userId);
+        //List<Follow> followers = followManager.findAllFollowers(userId);
+        //Set<Long> myFollowings = followManager.findAllFollowings(userId).stream()
+        //    .map(f -> f.getFollowingUser().getId())
+        //    .collect(Collectors.toSet());
+        //return followMapper.toFollowerReadRes(followers, myFollowings);
 
-        Set<Long> myFollowings = followManager.findAllFollowings(userId).stream()
-            .map(f -> f.getFollowingUser().getId())
-            .collect(Collectors.toSet());
+        List<Follow> followers = followRepository.findAllFollowersWithUser(userId);
 
-        return followMapper.toFollowerReadRes(followers, myFollowings);
+        List<Follow> followings = followRepository.findAllFollowingsWithUser(userId);
+        Set<Long> myFollowings = followings.stream()
+                .map(follow -> follow.getFollowingUser().getId())
+                .collect(Collectors.toSet());
+
+        return FollowerReadRes.of(followers, myFollowings);
     }
 
     /**
@@ -84,8 +108,15 @@ public class FollowService {
      *               2. dto 반환
      */
     public FollowingsReadRes readFollowings(Long userId) {
-        List<Follow> follows = followManager.findAllFollowings(userId);
+        //List<Follow> follows = followManager.findAllFollowings(userId);
+        //return followMapper.toFollowingsReadRes(follows);
 
-        return followMapper.toFollowingsReadRes(follows);
+        List<Follow> follows = followRepository.findAllFollowingsWithUser(userId);
+        return FollowingsReadRes.from(follows);
+    }
+
+    private User findById(Long followingId) {
+        return userRepository.findById(followingId)
+                .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
     }
 }

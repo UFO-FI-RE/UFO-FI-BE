@@ -66,21 +66,21 @@ public class OrderMapper {
             .build();
     }
 
-    public TradeHistory toPurchaseHistories(TradePost tradePost, User buyer) {
-        return TradeHistory.builder()
-            .status(Status.PURCHASE)
-            .tradePost(tradePost)
-            .user(buyer)
-            .build();
-    }
+//    public TradeHistory toPurchaseHistories(TradePost tradePost, User buyer) {
+//        return TradeHistory.builder()
+//            .status(Status.PURCHASE)
+//            .tradePost(tradePost)
+//            .user(buyer)
+//            .build();
+//    }
 
-    public TradeHistory toSaleHistories(TradePost tradePost, User seller) {
-        return TradeHistory.builder()
-            .status(Status.SALE)
-            .tradePost(tradePost)
-            .user(seller)
-            .build();
-    }
+//    public TradeHistory toSaleHistories(TradePost tradePost, User seller) {
+//        return TradeHistory.builder()
+//            .status(Status.SALE)
+//            .tradePost(tradePost)
+//            .user(seller)
+//            .build();
+//    }
 
     public BulkPurchaseConfirmRes toTradePostBulkPurchaseConfirmRes(PurchaseResult purchaseResult) {
         return BulkPurchaseConfirmRes.builder()

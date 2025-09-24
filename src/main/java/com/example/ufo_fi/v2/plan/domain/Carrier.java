@@ -1,5 +1,9 @@
 package com.example.ufo_fi.v2.plan.domain;
 
 public enum Carrier {
-    SKT, KT, LGU
+    SKT, KT, LGU;
+
+    public boolean hasCarrierBy(String rawCarrier) {
+        return this.name().equals(rawCarrier);
+    }
 }
