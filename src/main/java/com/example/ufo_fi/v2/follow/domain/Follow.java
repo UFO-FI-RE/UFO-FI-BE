@@ -40,7 +40,7 @@ public class Follow {
     private User followingUser;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Follow(User followerUser, User followingUser) {
+    private Follow(User followerUser, User followingUser) {
         this.followerUser = requireFollowerUser(followerUser);
         this.followingUser = requireFollowingUser(followingUser);
         validateFollowUsers(followerUser, followingUser);
