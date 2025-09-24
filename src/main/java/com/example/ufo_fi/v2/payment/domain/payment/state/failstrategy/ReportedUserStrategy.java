@@ -7,6 +7,8 @@ import com.example.ufo_fi.v2.payment.domain.payment.entity.Payment;
 import com.example.ufo_fi.v2.user.domain.Role;
 import com.example.ufo_fi.v2.user.domain.User;
 import com.example.ufo_fi.v2.user.domain.UserManager;
+import com.example.ufo_fi.v2.user.exception.UserErrorCode;
+import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ public class ReportedUserStrategy implements TossErrorHandleStrategy {
     //private final JwtUtil jwtUtil;
     private final UserManager userManager;
 
+    private final UserRepository userRepository;
+
     //User의 Role을 업데이트하고, JWT 토큰을 삭제합니다.
     @Override
     @Transactional
@@ -33,8 +37,12 @@ public class ReportedUserStrategy implements TossErrorHandleStrategy {
                 //jwtUtil.deleteJwtCookie(response);
             }
         }
-        User user = userManager.findById(payment.getUser().getId());
-        userManager.updateUserRole(user, Role.ROLE_REPORTED);
+        //User user = userManager.findById(payment.getUser().getId());
+        //userManager.updateUserRole(user, Role.ROLE_REPORTED);
+
+        User user = payment.getUser();
+        user.updateRole(Role.ROLE_REPORTED);
+
         stateMetaData.put(MetaDataKey.PAYMENT_DONE, true);
         throw new GlobalException(tossErrorCode);
     }
