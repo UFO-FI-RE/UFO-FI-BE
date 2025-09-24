@@ -6,6 +6,7 @@ import com.example.ufo_fi.v2.payment.domain.payment.*;
 import com.example.ufo_fi.v2.payment.domain.payment.entity.FailLog;
 import com.example.ufo_fi.v2.payment.domain.payment.entity.Payment;
 import com.example.ufo_fi.v2.payment.exception.PaymentErrorCode;
+import com.example.ufo_fi.v2.payment.persistence.FailLogRepository;
 import com.example.ufo_fi.v2.payment.persistence.PaymentRepository;
 import com.example.ufo_fi.v2.payment.presentation.dto.request.ConfirmReq;
 import com.example.ufo_fi.v2.payment.presentation.dto.request.PaymentReq;
@@ -17,6 +18,8 @@ import com.example.ufo_fi.v2.payment.presentation.dto.response.PaymentRes;
 import com.example.ufo_fi.v2.payment.presentation.dto.response.ZetRecoveryRes;
 import com.example.ufo_fi.v2.user.domain.User;
 import com.example.ufo_fi.v2.user.domain.UserManager;
+import com.example.ufo_fi.v2.user.exception.UserErrorCode;
+import com.example.ufo_fi.v2.user.persistence.UserRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,18 +38,25 @@ public class PaymentService {
     private final FailLogManager failLogManager;
     private final PaymentMapper paymentMapper;
 
+    private final UserRepository userRepository;
+    private final FailLogRepository failLogRepository;
+
     /**
      * 결제 임시 정보 DB 저장
      * 결제 임시 정보 반환
      */
     @Transactional
     public PaymentRes charge(Long userId, PaymentReq paymentReq) {
-        User userProxy = entityManager.getReference(User.class, userId);
+        //User userProxy = entityManager.getReference(User.class, userId);
+        //Payment payment = Payment.of(userProxy, paymentReq, PaymentStatus.READY, 0);
+        //Payment savedPayment = paymentManager.saveCharge(payment);
 
-        Payment payment = Payment.of(userProxy, paymentReq, PaymentStatus.READY, 0);
-        Payment savedPayment = paymentManager.saveCharge(payment);
+        User user = userRepository.getReferenceById(userId);
 
-        return PaymentRes.of(userProxy, savedPayment);
+        Payment payment = Payment.of(user, paymentReq, PaymentStatus.READY, 0);
+        Payment savedPayment = paymentRepository.save(payment);
+
+        return PaymentRes.of(user, savedPayment);
     }
 
     /**
@@ -56,23 +66,28 @@ public class PaymentService {
      * 4. response 응답
      */
     public ConfirmRes confirm(ConfirmReq confirmReq) {
-        Payment payment = findPayment(confirmReq.getOrderId());
-        StateMetaData stateMetaData = createStateMetaData();
+        //Payment payment = findPayment(confirmReq.getOrderId());
+        //StateMetaData stateMetaData = createStateMetaData();
 
+        Payment payment = paymentRepository.findByOrderId(confirmReq.getOrderId())
+                .orElseThrow(() -> new GlobalException(PaymentErrorCode.PAYMENT_NOT_FOUND));
+
+        StateMetaData stateMetaData = new StateMetaData();
         stateMetaData.put(MetaDataKey.CONFIRM_REQUEST, confirmReq);
+
         paymentStateContext.proceedAll(payment, stateMetaData);
 
         User user = payment.getUser();
         return ConfirmRes.of(payment, user);
     }
 
-    private StateMetaData createStateMetaData() {
-        return new StateMetaData();
-    }
+    //private StateMetaData createStateMetaData() {
+    //    return new StateMetaData();
+    //}
 
-    private Payment findPayment(String orderId) {
-        return paymentManager.findByOrderId(orderId);
-    }
+    //private Payment findPayment(String orderId) {
+    //    return paymentManager.findByOrderId(orderId);
+    //}
 
     /**
      * 1. DONE 상태로 update
@@ -80,39 +95,60 @@ public class PaymentService {
      */
     @Transactional
     public ZetRecoveryRes zetRecovery(ZetRecoveryReq zetRecoveryReq) {
+        //Payment payment = paymentManager.findByOrderId(zetRecoveryReq.getOrderId());
+        //paymentManager.validateRecoveryAmount(payment, zetRecoveryReq.getRecoveryZet());
+        //User userProxy = entityManager.getReference(User.class, zetRecoveryReq.getUserId());
+        //userManager.zetRecovery(userProxy, zetRecoveryReq.getRecoveryZet());
+        //return paymentMapper.toZetRecoveryRes(userProxy, payment.getStatus());
+
 
         // 1. TIMEOUT 상태 체크
-        Payment payment = paymentManager.findByOrderId(zetRecoveryReq.getOrderId());
+        Payment payment = paymentRepository.findByOrderId(zetRecoveryReq.getOrderId())
+                .orElseThrow(() -> new GlobalException(PaymentErrorCode.PAYMENT_NOT_FOUND));
 
         if (!payment.isTimeOut()) {
             throw new GlobalException(PaymentErrorCode.PAYMENT_STATUS_ERROR);
         }
 
         // 2. 충전 zet 검증
-        paymentManager.validateRecoveryAmount(payment, zetRecoveryReq.getRecoveryZet());
+        if (payment.isRightZetBy(zetRecoveryReq.getRecoveryZet())) {
+            throw new GlobalException(PaymentErrorCode.PAYMENT_AMOUNT_CONFLICT);
+        }
 
         // 3. 복구
-        User userProxy = entityManager.getReference(User.class, zetRecoveryReq.getUserId());
-        userManager.zetRecovery(userProxy, zetRecoveryReq.getRecoveryZet());
+        User user = userRepository.findById(zetRecoveryReq.getUserId())
+                .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
+        user.increaseZetAsset(zetRecoveryReq.getRecoveryZet());
 
         // 4. 상태 변경
         payment.changeState(PaymentStatus.DONE);
 
-        return paymentMapper.toZetRecoveryRes(userProxy, payment.getStatus());
+        return ZetRecoveryRes.of(user.getId(), user.getZetAsset(), payment.getStatus());
     }
 
     public FailLogRes readFailLog(Long paymentId) {
-        Payment payment = paymentManager.findById(paymentId);
+        //Payment payment = paymentManager.findById(paymentId);
+        //String orderId = payment.getOrderId();
+        //FailLog failLog = failLogManager.findByOrderId(orderId);
+        //return paymentMapper.toFailLogRes(failLog);
+
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new GlobalException(PaymentErrorCode.PAYMENT_NOT_FOUND));
         String orderId = payment.getOrderId();
 
-        FailLog failLog = failLogManager.findByOrderId(orderId);
+        FailLog failLog = failLogRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new GlobalException(PaymentErrorCode.FAIL_LOG_NOT_FOUND));
 
-        return paymentMapper.toFailLogRes(failLog);
+        return FailLogRes.from(failLog);
     }
 
     public PaymentBackOfficesRes readPayments() {
-        List<Payment> payments = paymentManager.findAllByStatusFailAndTimeout();
+        //List<Payment> payments = paymentManager.findAllByStatusFailAndTimeout();
+        //return paymentMapper.toPaymentBackOfficesRes(payments);
 
-        return paymentMapper.toPaymentBackOfficesRes(payments);
+        List<Payment> payments = paymentRepository.findAllByStatusIn(
+                List.of(PaymentStatus.TIMEOUT, PaymentStatus.FAIL)
+        );
+        return PaymentBackOfficesRes.from(payments);
     }
 }

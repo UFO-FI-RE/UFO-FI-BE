@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReportMapper {
 
-    public Report toReport(
-        User user, User reportedUser, TradePost tradePost, ReportCreateReq reportCreateReq
-    ) {
-
-        return Report.of(user, reportedUser, tradePost, reportCreateReq);
-    }
+//    public Report toReport(
+//        User user, User reportedUser, TradePost tradePost, ReportCreateReq reportCreateReq
+//    ) {
+//
+//        return Report.of(user, reportedUser, tradePost, reportCreateReq);
+//    }
 
     public RollBackReportsReadRes toRollBackReportsReadRes(List<TradePost> reportedPosts) {
 

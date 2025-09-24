@@ -19,7 +19,18 @@ public enum PaymentErrorCode implements ErrorCode {
     TOSS_PAYMENT_CONFIRM_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "결제 승인 요청에 실패했습니다."),
     TOSS_PAYMENT_CONFIRM_PARSE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "승인 응답 파싱에 실패했습니다."),
     TOSS_PAYMENT_CONFIRM_TIME_OUT(HttpStatus.INTERNAL_SERVER_ERROR, "토스와의 통신 시간이 오바되었습니다."),
-    FAIL_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "fail 로그가 없습니다.");
+    FAIL_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "fail 로그가 없습니다."),
+    ORDER_ID_NOT_NULL(HttpStatus.BAD_REQUEST, "orderId는 null일 수 없습니다."),
+    PACKAGE_NAME_NOT_NULL(HttpStatus.BAD_REQUEST, "packageName은 null일 수 없습니다."),
+    PACKAGE_NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "PackageName이 너무 깁니다."),
+    PRICE_NOT_NULL(HttpStatus.BAD_REQUEST, "price는 null일 수 없습니다."),
+    INVALID_PRICE(HttpStatus.BAD_REQUEST, "price는 양수여야 합니다."),
+    AMOUNT_NOT_NULL(HttpStatus.BAD_REQUEST, "amount는 null일 수 없습니다."),
+    INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "amount는 양수여야 합니다."),
+    USER_NOT_NULL(HttpStatus.BAD_REQUEST, "구매자는 null일 수 없습니다."),
+    STATUS_NOT_NULL(HttpStatus.BAD_REQUEST, "status는 null일 수 없습니다."),
+    INVALID_RETRY_COUNT(HttpStatus.INTERNAL_SERVER_ERROR, "retryCount는 양수이고, 3회 이하입니다.")
+    ;
 
 
     private final HttpStatus httpStatus;

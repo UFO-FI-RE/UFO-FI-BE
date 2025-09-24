@@ -21,14 +21,14 @@ public class UserMapper {
     //    return UserRoleReadRes.from(role, userPhoneNumber);
     //}
 
-    public AnotherUserInfoReadRes toAnotherUserInfoReadRes(
-        User anotherUser, List<TradePost> tradePosts, Long followerCount, Long followingCount
-    ) {
-        if(tradePosts.isEmpty()){
-            return AnotherUserInfoReadRes.of(anotherUser, followerCount, followingCount);
-        }
-        return AnotherUserInfoReadRes.of(anotherUser, followerCount, followingCount, tradePosts);
-    }
+//    public AnotherUserInfoReadRes toAnotherUserInfoReadRes(
+//        User anotherUser, List<TradePost> tradePosts, Long followerCount, Long followingCount
+//    ) {
+//        if(tradePosts.isEmpty()){
+//            return AnotherUserInfoReadRes.of(anotherUser, followerCount, followingCount);
+//        }
+//        return AnotherUserInfoReadRes.of(anotherUser, followerCount, followingCount, tradePosts);
+//    }
 
     public UserInfoReadRes toUserInfoRes(User user, UserPlan userPlan, Plan plan) {
         return UserInfoReadRes.of(user, userPlan, plan);
