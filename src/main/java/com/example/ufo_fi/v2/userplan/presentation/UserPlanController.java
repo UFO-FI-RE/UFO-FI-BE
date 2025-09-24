@@ -20,12 +20,11 @@ public class UserPlanController implements UserPlanApiSpec {
     private final UserPlanService userPlanService;
 
     @Override
-    public ResponseEntity<ResponseBody<SignupRes>> signup(
+    public ResponseEntity<ResponseBody<Void>> signup(
         SignupReq signupReq
     ) {
-        return ResponseEntity.ok(
-            ResponseBody.success(
-                userPlanService.updateUserAndUserPlan(AuthContextHolder.getUserId(), signupReq)));
+        userPlanService.updateUserAndUserPlan(AuthContextHolder.getUserId(), signupReq.getUserInfoReq(), signupReq.getUserPlanReq());
+        return ResponseEntity.ok(ResponseBody.noContent());
     }
 
     @Override

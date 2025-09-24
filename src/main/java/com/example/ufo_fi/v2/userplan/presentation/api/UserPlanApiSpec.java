@@ -23,7 +23,7 @@ public interface UserPlanApiSpec {
     @Operation(summary = "회원가입 API", description = "유저 정보와 요금제 정보를 포함하여 저장한다.")
     @ApiResponse(useReturnTypeSchema = true)
     @PostMapping("/user-plan")
-    ResponseEntity<ResponseBody<SignupRes>> signup(
+    ResponseEntity<ResponseBody<Void>> signup(
         @RequestBody @Valid SignupReq signupReq
     );
 

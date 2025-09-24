@@ -45,6 +45,7 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
+    // TODO : phoneNumber는 규칙을 가지고 있기에 불변 객체로 만들기
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -65,27 +66,34 @@ public class User {
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
+    public static User of(String kakaoId, String email, Role roleUser) {
+        return User.builder()
+                .kakaoId(kakaoId)
+                .email(email)
+                .phoneNumber("")
+                .role(roleUser)
+                .build();
+    }
+
+    public void updateUserBaseInfo(
+        String name,
+        String phoneNumber,
+        boolean activeStatus,
+        Role roleUser
+    ) {
+        assertNotSuspended();
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.isActive = activeStatus;
+        this.role = roleUser;
+    }
+
     public void decreaseZetAsset(Integer totalZet) {
         this.zetAsset -= totalZet;
     }
 
     public void increaseZetAsset(Integer totalZet) {
         this.zetAsset += totalZet;
-    }
-
-    public void signup(
-        UserInfoReq userInfoReq,
-        String randomNickname,
-        ProfilePhoto randomProfilePhoto,
-        boolean activeStatus,
-        Role roleUser
-    ) {
-        this.name = userInfoReq.getName();
-        this.phoneNumber = userInfoReq.getPhoneNumber();
-        this.nickname = randomNickname;
-        this.profilePhoto = randomProfilePhoto;
-        this.isActive = activeStatus;
-        this.role = roleUser;
     }
 
     public void updateNickname(String targetNickname) {
@@ -97,13 +105,20 @@ public class User {
     }
 
     public void updateRoleUser() {
+        assertNotSuspended();
         this.role = Role.ROLE_USER;
+    }
+
+    private void assertNotSuspended() {
+        if(this.role == Role.ROLE_REPORTED){
+            throw new IllegalStateException("정지된 사용자는 어떤 동작도 할 수 없습니다.");
+        }
     }
 
     public void updateRole(Role role) {
         this.role = role;
     }
-
+  
     public static User of(String kakaoId, String email, Role roleUser) {
         return User.builder()
                 .kakaoId(kakaoId)

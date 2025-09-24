@@ -30,17 +30,17 @@ public class UserManager {
         }
     }
 
-    public User findById(Long userId) {
+    // public User findById(Long userId) {
+    //
+    //    return userRepository.findById(userId)
+    //            .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
+    // }
 
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new GlobalException(UserErrorCode.NOT_FOUND_USER));
-    }
-
-    public void updateUserNickname(
-            User user, UserInfoReq userInfoReq, String randomNickname, ProfilePhoto randomProfilePhoto
-    ) {
-        user.signup(userInfoReq, randomNickname, randomProfilePhoto, true, Role.ROLE_USER);
-    }
+    // public void updateUserNickname(
+    //        User user, UserInfoReq userInfoReq, String randomNickname, ProfilePhoto randomProfilePhoto
+    // ) {
+    //     user.signup(userInfoReq, randomNickname, randomProfilePhoto, true, Role.ROLE_USER);
+    //}
 
     public String getPhoneNumber(User user) {
         return user.getPhoneNumber() != null ? user.getPhoneNumber() : "";
@@ -50,12 +50,11 @@ public class UserManager {
         user.updateNickname(nickname + String.format(" #%03d", userId));
     }
 
-    public void updateUserRole(User user, Role role) {
-        user.updateRole(role);
-    }
+    // public void updateUserRole(User user, Role role) {
+    //     user.updateRole(role);
+    // }
 
     public Page<User> findAllByRole(Role role, PageRequest pageRequest) {
-
         return userRepository.findAllByRole(role, pageRequest);
     }
 
