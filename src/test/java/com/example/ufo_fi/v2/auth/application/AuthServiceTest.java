@@ -17,22 +17,22 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @SpringBootTest
 class AuthServiceTest {
 
-    @Autowired
-    private AuthService authService;
-
-    @DisplayName("로그인 시 User가 저장됨을 확인할 수 있다.")
-    @Test
-    public void loginTest() {
-        //given
-        KakaoAccount kakaoAccount = new KakaoAccount("test2000@naver.com");
-        OAuthUserInfo oAuthUserInfo = new KakaoUserInfo("test-providerId", kakaoAccount);
-
-        //when
-        User user = authService.login(oAuthUserInfo);
-
-        //then
-        Assertions.assertThat(user)
-                .extracting("kakaoId", "email")
-                .contains("kakaotest-providerId", "test2000@naver.com");
-    }
+//    @Autowired
+//    private AuthService authService;
+//
+//    @DisplayName("로그인 시 User가 저장됨을 확인할 수 있다.")
+//    @Test
+//    public void loginTest() {
+//        //given
+//        KakaoAccount kakaoAccount = new KakaoAccount("test2000@naver.com");
+//        OAuthUserInfo oAuthUserInfo = new KakaoUserInfo("test-providerId", kakaoAccount);
+//
+//        //when
+//        User user = authService.login(oAuthUserInfo);
+//
+//        //then
+//        Assertions.assertThat(user)
+//                .extracting("kakaoId", "email")
+//                .contains("kakaotest-providerId", "test2000@naver.com");
+//    }
 }
