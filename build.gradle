@@ -99,13 +99,40 @@ def jacocoExcludePatterns = [
 
 jacocoTestReport {
     reports {
-        xml.required = true
-        html.required = true
+        xml.required.set(true)
+        csv.required.set(false)
+        html.required.set(false)
     }
 
     classDirectories.setFrom(files(classDirectories.files.collect {
         fileTree(dir: it, excludes: jacocoExcludePatterns)
     }))
+
+    // 다음 커버리지 기준 테스트가 실행
+    // finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            excludes = []
+        }
+    }
 }
 
 clean {
