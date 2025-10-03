@@ -41,6 +41,14 @@ jobs:
       - name: Gradle 테스트 & 커버리지 리포트
         run: ./gradlew clean test jacocoTestReport --stacktrace
 
+      # 리포트 존재 확인 (디버깅용, 문제 해결되면 삭제 가능)
+      - name: Debug - list jacoco xml
+        run: |
+          shopt -s globstar
+          ls -l ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml || true
+          echo "Found XML count: $(ls ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml 2>/dev/null | wc -l)"
+
+
       - name: PR에 코드 커버리지 측정 레포트 생성
         id: jacoco
         uses: madrapps/jacoco-report@v1.7.2
