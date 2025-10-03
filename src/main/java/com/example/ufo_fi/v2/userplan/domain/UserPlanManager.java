@@ -23,10 +23,10 @@ public class UserPlanManager {
             .orElseThrow(() -> new GlobalException(TradePostErrorCode.USER_PLAN_NOT_FOUND));
     }
 
-    public void saveUserPlan(User user, Plan plan, UserPlanReq userPlanReq) {
-        UserPlan userPlan = UserPlan.of(plan, user);
-        userPlanRepository.save(userPlan);
-    }
+//    public void saveUserPlan(User user, Plan plan, UserPlanReq userPlanReq) {
+//        UserPlan userPlan = UserPlan.of(plan, user, plan.getSellMobileDataCapacityGb());
+//        userPlanRepository.save(userPlan);
+//    }
 
     public UserPlan findByUser(User user) {
         return userPlanRepository.findByUser(user)

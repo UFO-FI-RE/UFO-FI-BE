@@ -52,9 +52,10 @@ public class UserPlan {
         this.plan = plan;
     }
 
-    public static UserPlan of(Plan plan, User user) {
+    // TODO : 불변식 적용, 추후 리팩토링
+    public static UserPlan of(Plan plan, User user, int sellableDataAmount) {
         return UserPlan.builder()
-            .sellableDataAmount(plan.getSellMobileDataCapacityGb())
+            .sellableDataAmount(sellableDataAmount)
             .purchaseDataAmount(0)
             .user(user)
             .plan(plan)
@@ -62,7 +63,6 @@ public class UserPlan {
     }
 
     public void updateSellableDataAmount(int originData, int newData) {
-
         this.increaseSellableDataAmount(originData);
         this.subtractSellableDataAmount(newData);
     }
@@ -87,6 +87,7 @@ public class UserPlan {
         this.sellableDataAmount += restore;
     }
 
+    // TODO : 불변식 추가
     public void increasePurchaseAmount(int purchaseDataAmount) {
         this.purchaseDataAmount += purchaseDataAmount;
     }
