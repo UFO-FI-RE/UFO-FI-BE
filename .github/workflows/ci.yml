@@ -34,8 +34,12 @@ jobs:
       - name: Gradle 권한 부여
         run: chmod +x ./gradlew
 
-      - name: Gradle 빌드 실행
-        run: ./gradlew clean build --stacktrace
+#      - name: Gradle 빌드 실행
+#        run: ./gradlew clean build --stacktrace
+
+      # 단순 빌드 말고 test + jacocoTestReport 까지 실행
+      - name: Gradle 테스트 & 커버리지 리포트
+        run: ./gradlew clean test jacocoTestReport --stacktrace
 
       - name: PR에 코드 커버리지 측정 레포트 생성
         id: jacoco
