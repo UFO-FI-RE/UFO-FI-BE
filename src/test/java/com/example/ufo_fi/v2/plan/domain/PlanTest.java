@@ -49,4 +49,24 @@ class PlanTest {
         // then
         assertThat(result).isFalse();
     }
+
+    @DisplayName("KT 요금제의 통신사와 주어진 통신사가 LGU+인 경우 false를 반환한다")
+    @Test
+    void isEqualBy_notKT_false() {
+        // given
+        Plan plan = Plan.builder()
+                .name("무제한 10GB")
+                .carrier(KT)
+                .mobileDataAmount(null)
+                .isUltimatedAmount(true)
+                .sellMobileDataCapacityGb(10)
+                .mobileDataType(MobileDataType._5G)
+                .build();
+
+        // when
+        boolean result = plan.isEqualBy(LGU);
+
+        // then
+        assertThat(result).isFalse();
+    }
 }

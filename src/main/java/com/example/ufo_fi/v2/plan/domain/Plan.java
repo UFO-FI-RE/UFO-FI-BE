@@ -46,6 +46,7 @@ public class Plan {
     @Column(name = "mobile_data_type", nullable = false)
     private MobileDataType mobileDataType;
 
+    // TODO : 네이밍 수정, 무엇을 비교하는 메서드인지
     public boolean isEqualBy(Carrier carrier) {
         return this.carrier == carrier;
     }
