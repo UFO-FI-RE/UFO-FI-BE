@@ -89,12 +89,12 @@ jacoco {
 }
 
 def jacocoExcludePatterns = [
-        'com/ixi_U/IxiUApplication.class',
-        '**/common/**',
-        '**/exception/**',
-        '**/dto/**',
-        '**/config/**',
-        '**/test/**'
+//        'com/ixi_U/IxiUApplication.class',
+//        '**/common/**',
+//        '**/exception/**',
+//        '**/dto/**',
+//        '**/config/**',
+//        '**/test/**'
 ]
 
 jacocoTestReport {
