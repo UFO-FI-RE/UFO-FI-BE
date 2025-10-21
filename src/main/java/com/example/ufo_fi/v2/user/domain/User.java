@@ -50,7 +50,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "zet_asset")
-    private Integer zetAsset;
+    private int zetAsset;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -66,6 +66,7 @@ public class User {
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
+    // TODO : 불변식 필요, 상태 같은 경우는 파라미터 값으로 받는 것이 아닌 직접 넣어주기
     public void updateUserBaseInfo(
         String name,
         String phoneNumber,
@@ -79,14 +80,17 @@ public class User {
         this.role = roleUser;
     }
 
-    public void decreaseZetAsset(Integer totalZet) {
+    // TODO : 불변식 필요, 경계값 test 필요
+    public void decreaseZetAsset(int totalZet) {
         this.zetAsset -= totalZet;
     }
 
-    public void increaseZetAsset(Integer totalZet) {
+    // TODO : 불변식 필요
+    public void increaseZetAsset(int totalZet) {
         this.zetAsset += totalZet;
     }
 
+    // TODO : 불변식 필요
     public void updateNickname(String targetNickname) {
         this.nickname = targetNickname;
     }
@@ -95,8 +99,11 @@ public class User {
         this.role = Role.ROLE_REPORTED;
     }
 
+    // TODO : 불변식 필요, 신고된 유저만이 ROLE_USER로 권한을 업데이트 할 수 있음
     public void updateRoleUser() {
-        assertNotSuspended();
+        if(this.role != Role.ROLE_REPORTED){
+            throw new IllegalStateException("정지된 사용자만 일반 사용자로 권한을 업데이트 할 수 있습니다.");
+        }
         this.role = Role.ROLE_USER;
     }
 
@@ -110,6 +117,7 @@ public class User {
         this.role = role;
     }
 
+    // TODO : 불변식 필요
     public static User of(String kakaoId, String email, Role roleUser) {
         return User.builder()
                 .kakaoId(kakaoId)

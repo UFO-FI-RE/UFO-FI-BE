@@ -116,6 +116,7 @@ public class UserService {
 
     @Transactional
     public UserNicknameUpdateRes updateUserNicknames(Long userId, UserNicknameUpdateReq userNicknameUpdateReq) {
+        // before
         // User user = userManager.findById(userId);
         // userManager.updateUserNickname(user, userNicknameUpdateReq.getNickname(), userId);
 
