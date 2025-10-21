@@ -67,7 +67,7 @@ public class UserPlanService {
 
         Plan plan = planRepository.findById(userPlanReq.getPlanId()).orElseThrow(() -> new GlobalException(PlanErrorCode.NOT_FOUND_PLAN));
 
-        UserPlan userPlan = UserPlan.of(plan, user);
+        UserPlan userPlan = UserPlan.of(plan, user, plan.getSellMobileDataCapacityGb());
         userPlanRepository.save(userPlan);
     }
 
