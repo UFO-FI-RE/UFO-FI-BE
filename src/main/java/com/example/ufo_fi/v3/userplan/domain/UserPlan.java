@@ -1,4 +1,4 @@
-package com.example.ufo_fi.v3.userplan;
+package com.example.ufo_fi.v3.userplan.domain;
 
 import com.example.ufo_fi.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -29,6 +29,14 @@ public class UserPlan extends BaseEntity {
         this.data = requireData(data);
         this.planId = requirePlanId(planId);
         this.userId = requireUserId(userId);
+    }
+
+    public static UserPlan of(Integer sellableData, Integer purchaseData, Long planId, Long userId) {
+        return UserPlan.builder()
+                .data(Data.of(sellableData, purchaseData))
+                .planId(planId)
+                .userId(userId)
+                .build();
     }
 
     private Data requireData(Data data) {

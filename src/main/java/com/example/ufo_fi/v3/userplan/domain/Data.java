@@ -1,4 +1,4 @@
-package com.example.ufo_fi.v3.userplan;
+package com.example.ufo_fi.v3.userplan.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -17,7 +17,7 @@ public class Data {
 
     @Builder(access = AccessLevel.PRIVATE)
     private Data(Integer sellableData, Integer purchaseData) {
-        this.sellableData = requireSellableData(sellableData, purchaseData);
+        this.sellableData = requireSellableData(sellableData);
         this.purchaseData = requirePurchaseData(purchaseData);
     }
 
@@ -28,10 +28,10 @@ public class Data {
                 .build();
     }
 
-    private Integer requireSellableData(Integer sellableData, Integer purchaseData) {
+    private Integer requireSellableData(Integer sellableData) {
         if(sellableData == null) throw new IllegalArgumentException("sellableData는 null일 수 없습니다.");
         if(sellableData < 0) {
-            throw new IllegalArgumentException("sellableData는 ");
+            throw new IllegalArgumentException("sellableData는 음수일 수 없습니다.");
         }
         return sellableData;
     }
